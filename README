@@ -1,0 +1,1 @@
+- Quick and dirty ssh patch to add password logging for logins. Used to observe brute force attacks on my server.
